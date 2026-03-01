@@ -2,7 +2,7 @@
 
 ## Project Summary
 
-This is the agentsync project.
+This is the agentflow project.
 
 ## Quick Start
 

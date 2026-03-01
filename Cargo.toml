@@ -1,8 +1,8 @@
 [workspace]
 members = [
-    "crates/agentsync",
-    "crates/agentsync-tracing",
-    "crates/agentsync-ui",
+    "crates/agentflow",
+    "crates/agentflow-tracing",
+    "crates/agentflow-ui",
     "tests",
 ]
 resolver = "3"

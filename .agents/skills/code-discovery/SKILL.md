@@ -5,7 +5,7 @@ description: Load relevant code guidelines based on user query or work context. 
 
 # Code Guideline Discovery Skill
 
-This skill provides dynamic code guideline documentation discovery for the agentsync codebase. It enables lazy loading of guideline context based on user queries and coding tasks.
+This skill provides dynamic code guideline documentation discovery for the agentflow codebase. It enables lazy loading of guideline context based on user queries and coding tasks.
 
 ## When to Use This Skill
 

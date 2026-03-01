@@ -5,7 +5,7 @@ description: Load relevant feature docs based on user query. Use when user asks 
 
 # Feature Discovery Skill
 
-This skill provides dynamic feature documentation discovery for the agentsync codebase. It enables lazy loading of feature context based on user queries.
+This skill provides dynamic feature documentation discovery for the agentflow codebase. It enables lazy loading of feature context based on user queries.
 
 ## When to Use This Skill
 
@@ -15,7 +15,7 @@ Use this skill when:
 - User asks "what is X?" or "how does X work?"
 - User references a component and wants context
 - Before implementing features to understand existing functionality
-- User asks about agentsync capabilities
+- User asks about agentflow capabilities
 
 ## How Feature Discovery Works
 

@@ -1,6 +1,6 @@
-# agentsync Documentation
+# agentflow Documentation
 
-Welcome to the agentsync documentation.
+Welcome to the agentflow documentation.
 
 ## See Also
 

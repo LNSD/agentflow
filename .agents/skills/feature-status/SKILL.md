@@ -6,7 +6,7 @@ allowed-tools: Bash(python3 .claude/skills/feature-status/report.py )
 
 # Feature Status Skill
 
-This skill generates status reports for agentsync features based on their maturity level. It reads the `status` field from feature documentation frontmatter and organizes features by maturity.
+This skill generates status reports for agentflow features based on their maturity level. It reads the `status` field from feature documentation frontmatter and organizes features by maturity.
 
 ## When to Use This Skill
 

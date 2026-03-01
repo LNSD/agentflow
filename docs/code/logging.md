@@ -53,33 +53,33 @@ The logging system uses a **two-tier configuration** for log levels:
 
 **Default Levels:**
 
-- **Workspace crates**: `info` level (configurable via `AGENTSYNC_LOG` environment variable)
+- **Workspace crates**: `info` level (configurable via `AGENTFLOW_LOG` environment variable)
 - **External dependencies**: `error` level (configurable via `RUST_LOG` environment variable)
 
 **Environment Variables:**
 
 ```bash
-# AGENTSYNC_LOG: Controls log level for all workspace crates
+# AGENTFLOW_LOG: Controls log level for all workspace crates
 # Default: info
 # Values: error, warn, info, debug, trace
-export AGENTSYNC_LOG=info
+export AGENTFLOW_LOG=info
 
-# RUST_LOG: Controls log level for specific crates (overrides AGENTSYNC_LOG)
+# RUST_LOG: Controls log level for specific crates (overrides AGENTFLOW_LOG)
 # Use for fine-grained control or external dependencies
 export RUST_LOG="some_crate=debug,sqlx=warn"
 ```
 
 **How It Works:**
 
-1. **`AGENTSYNC_LOG`** sets the baseline level for all workspace crates
+1. **`AGENTFLOW_LOG`** sets the baseline level for all workspace crates
 2. **`RUST_LOG`** can override specific crates or enable logging for external dependencies
 3. External crates default to `error` level to reduce noise
-4. Directives in `RUST_LOG` take precedence over `AGENTSYNC_LOG`
+4. Directives in `RUST_LOG` take precedence over `AGENTFLOW_LOG`
 
 **Best Practices:**
 
-- Use `AGENTSYNC_LOG=info` for production (default)
-- Use `AGENTSYNC_LOG=debug` for local development
+- Use `AGENTFLOW_LOG=info` for production (default)
+- Use `AGENTFLOW_LOG=debug` for local development
 - Use `RUST_LOG` for targeted debugging of specific modules
 - Never use `trace` level in production (performance impact)
 

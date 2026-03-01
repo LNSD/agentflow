@@ -213,35 +213,35 @@ If tests fail:
 
 ### Using Logs
 
-Tests use the `monitoring` crate's logging system. Enable structured logs via the `AGENTSYNC_LOG` environment variable to diagnose failures.
+Tests use the `monitoring` crate's logging system. Enable structured logs via the `AGENTFLOW_LOG` environment variable to diagnose failures.
 
 **Environment variables:**
 
 | Variable | Default | Values | Purpose |
 |---|---|---|---|
-| `AGENTSYNC_LOG` | `info` | `error`, `warn`, `info`, `debug`, `trace` | Log level for all agentsync workspace crates |
-| `AGENTSYNC_LOG_SPAN_EVENT` | *(none)* | `close`, `full` | Log tracing span lifecycle events |
-| `RUST_LOG` | *(none)* | Standard `tracing` directives | Fine-grained per-crate overrides (takes precedence over `AGENTSYNC_LOG`) |
+| `AGENTFLOW_LOG` | `info` | `error`, `warn`, `info`, `debug`, `trace` | Log level for all agentflow workspace crates |
+| `AGENTFLOW_LOG_SPAN_EVENT` | *(none)* | `close`, `full` | Log tracing span lifecycle events |
+| `RUST_LOG` | *(none)* | Standard `tracing` directives | Fine-grained per-crate overrides (takes precedence over `AGENTFLOW_LOG`) |
 
 **Examples with nextest:**
 
 ```bash
 # Debug logging for a failing test
-AGENTSYNC_LOG=debug cargo nextest run -p metadata-db -E 'test(my_failing_test)'
+AGENTFLOW_LOG=debug cargo nextest run -p metadata-db -E 'test(my_failing_test)'
 
 # Trace logging (very verbose)
-AGENTSYNC_LOG=trace cargo nextest run -p worker -E 'test(my_test)'
+AGENTFLOW_LOG=trace cargo nextest run -p worker -E 'test(my_test)'
 
 # Debug a specific crate while keeping others quiet
 RUST_LOG="metadata_db=trace,sqlx=warn" cargo nextest run -p metadata-db
 
 # Include span open/close events for async debugging
-AGENTSYNC_LOG=debug AGENTSYNC_LOG_SPAN_EVENT=full cargo nextest run -E 'test(my_test)'
+AGENTFLOW_LOG=debug AGENTFLOW_LOG_SPAN_EVENT=full cargo nextest run -E 'test(my_test)'
 ```
 
 **How it works:**
-- `AGENTSYNC_LOG` sets the log level for all agentsync workspace crates; external dependencies default to `error`
-- `RUST_LOG` directives override `AGENTSYNC_LOG` for specific crates (useful for noisy dependencies)
+- `AGENTFLOW_LOG` sets the log level for all agentflow workspace crates; external dependencies default to `error`
+- `RUST_LOG` directives override `AGENTFLOW_LOG` for specific crates (useful for noisy dependencies)
 - Logging is initialized via `monitoring::logging::init()`, which is idempotent and already called by the test context builder
 - Output goes to stderr, which nextest captures by default — use `-- --show-output` to see logs from passing tests
 
