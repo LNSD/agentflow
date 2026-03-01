@@ -1,0 +1,144 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
+
+jobs:
+  ## Linting and formatting
+  check-fmt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c # v1
+        with:
+          toolchain: nightly # Required for unstable features (see `rustfmt.toml` for details)
+          components: rustfmt
+
+      - uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
+
+      - name: Check formatting
+        run: just fmt-rs-check
+
+  check-code:
+    name: Check (${{ matrix.profile }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - profile: debug
+            extra-flags: ""
+          - profile: release
+            extra-flags: "--release"
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c # v1
+
+      - uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
+
+      - name: Cargo check
+        run: just check-rs --all-features ${{ matrix.extra-flags }}
+
+      - name: Run clippy
+        run: just clippy --all-features ${{ matrix.extra-flags }}
+
+  ## Tests
+  test-unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c # v1
+
+      - uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
+
+      - name: Install cargo-nextest
+        uses: baptiste0928/cargo-install@b687c656bda5733207e629b50a22bf68974a0305 # v3
+        with:
+          crate: cargo-nextest
+          version: ^0.9
+
+      - name: Unit tests
+        run: just test-unit --verbose
+
+  test-integration:
+    name: Integration tests
+    # Run on push to main, and on PRs only if they're not from a fork
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c # v1
+
+      - uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
+
+      - name: Install cargo-nextest
+        uses: baptiste0928/cargo-install@b687c656bda5733207e629b50a22bf68974a0305 # v3
+        with:
+          crate: cargo-nextest
+          version: ^0.9
+
+      - name: Integration tests
+        run: just test-integration --verbose
+
+  test-e2e:
+    name: E2E tests
+    # Run on push to main, and on PRs only if they're not from a fork
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c # v1
+
+      - uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
+
+      - name: Install cargo-nextest
+        uses: baptiste0928/cargo-install@b687c656bda5733207e629b50a22bf68974a0305 # v3
+        with:
+          crate: cargo-nextest
+          version: ^0.9
+
+      - name: E2E tests
+        run: just test-e2e --verbose
+
+  ## Other checks
+  check-unused-deps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c # v1
+
+      - uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
+
+      - name: Install cargo-machete
+        uses: baptiste0928/cargo-install@b687c656bda5733207e629b50a22bf68974a0305 # v3
+        with:
+          crate: cargo-machete
+
+      - name: Check for unused dependencies
+        run: just check-unused-deps

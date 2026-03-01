@@ -1,0 +1,15 @@
+## Nextest configuration
+# See docs/code/test-organization.md for test organization and filtering details.
+
+# Unit tests: #[cfg(test)] tests in lib and bin targets (excluding it_* modules)
+[profile.unit]
+default-filter = '(kind(lib) + kind(bin)) - test(/::it_/) - package(tests)'
+
+# Integration tests: <crate>/tests/ directories and it_* modules in lib/bin sources
+[profile.integration]
+default-filter = '(kind(test) + test(/::it_/)) - package(tests)'
+
+# E2E tests: top-level tests/ package
+[profile.e2e]
+default-filter = 'package(tests)'
+
